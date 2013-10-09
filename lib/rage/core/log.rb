@@ -3,10 +3,6 @@ require 'fileutils'
 
 module Rage
 
-  def logger
-    Rage.logger
-  end
-
   #
   # Sets up logging device
   #

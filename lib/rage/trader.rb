@@ -5,18 +5,21 @@ module Rage
 
     def initialize
       @logger = Rage.logger
+      @mtgox = MtGox.new
     end
 
     def buy
-      # go buy here
-      @logger.info("Bought #{btc} bitcoins at $#{price} for a total of $#{total}.")
-      save_trade(purchase)
+      cash = @mtgox.get_usd_balance
+      # buy all with cash
+      # @logger.info("Bought #{btc} bitcoins at $#{price} for a total of $#{total}.")
+      #save_trade(purchase)
     end
 
     def sell
-      # go sell here
-      @logger.info("Bought #{btc} bitcoins at $#{price} for a total of $#{total}.")
-      save_trade(purchase)
+      btc = @mtgox.get_btc_balance
+      @mtgox.sell(btc)
+      @logger.info("Sold #{btc} bitcoins.")
+      #save_trade(purchase)
     end
 
     def hold?
@@ -30,7 +33,7 @@ module Rage
         :price => purchase[:price],
         :total => purchase[:btc] * purchase[:price]
       }
-      redis = Redis.new(:host => "127.0.0.1", :port => 6379)
+      redis = Redis.new(:host => Config.redis_host, :port => Config.redis_port)
       redis.sadd('trades', trade.to_json)
       @logger.info("Trade has been saved.")
     end

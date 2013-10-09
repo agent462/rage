@@ -4,8 +4,15 @@ module Rage
   class Aggregator
 
     def initialize
-      @redis = Redis.new(:host => "127.0.0.1", :port => 6379)
+      @redis = Redis.new(:host => Config.redis_host, :port => Config.redis_port)
       @logger = Rage.logger
+    end
+
+    def prime
+      mtgox = MtGox.new
+      trades = mtgox.get_trades
+      @logger.info("Fetched #{trades.count} trades.")
+      save_trades(trades)
     end
 
     def update_hour(hour)
@@ -18,30 +25,16 @@ module Rage
       trades.each do |trade|
         if trade != 'h'
           details = @redis.hvals(trade)
-          if details[2].to_f > high
-            high = details[2].to_f
-          end
-          if details[2].to_f < low
-            low = details[2].to_f
-          end
+          high = details[2].to_f if details[2].to_f > high
+          low = details[2].to_f  if details[2].to_f < low
           volume += details[0].to_f
           price << details[2].to_f
         end
       end
-      close_trade = trades.max
-      close_price = @redis.hvals(close_trade)
-      open_trade = trades.min
-      open_price = @redis.hvals(open_trade)
-      h = {
-        :sma      => MovingAverage::sma(price),
-        :trades   => count,
-        :high     => high,
-        :low      => low,
-        :volume   => volume,
-        :open     => open_price[2].to_f,
-        :close    => close_price[2].to_f
-      }
-      @redis.hmset('agg' + hour, 'sma', h[:sma], 'trades', h[:trades], 'high', h[:high], 'low', h[:low], 'volume', h[:volume], 'open', h[:open], 'close', h[:close])
+      close_price = @redis.hvals(trades.max)
+      open_price = @redis.hvals(trades.min)
+      sma = MovingAverage::sma(price)
+      @redis.hmset('agg' + hour, 'sma', sma, 'trades', count, 'high', high, 'low', low, 'volume', volume, 'open', open_price[2].to_f, 'close', close_price[2].to_f)
     end
 
     def save_trades(trades)

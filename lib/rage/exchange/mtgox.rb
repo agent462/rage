@@ -24,7 +24,7 @@ module Rage
       end
     end
 
-    def buy
+    def buy(count)
       ::MtGox.buy! count, :market
     end
 
@@ -46,6 +46,16 @@ module Rage
       balance['BTC'].to_f > 0 ? true : false
     end
 
+    def get_usd_balance
+      balance = get_balance
+      balance['USD']
+    end
+
+    def get_btc_balance
+      balance = get_balance
+      balance['BTC']
+    end
+
     def get_balance
       balance = {}
       response = ::MtGox.balance
@@ -56,10 +66,7 @@ module Rage
     end
 
     def get_trades
-      trades = ::MtGox.trades
-      @logger.info("Fetched #{trades.count} trades.")
-      agg = Aggregator.new
-      agg.save_trades(trades)
+      ::MtGox.trades
     end
 
   end
