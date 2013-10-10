@@ -10,9 +10,13 @@ module Rage
 
     def prime
       mtgox = MtGox.new
-      trades = mtgox.get_trades
+      trades = mtgox.get_trades(:since => get_last_saved_trade.to_i)
       @logger.info("Fetched #{trades.count} trades.")
       save_trades(trades)
+    end
+
+    def get_last_saved_trade
+      @redis.smembers(key(Time.now)).max # need to get last hour
     end
 
     def update_hour(hour)

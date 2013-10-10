@@ -50,13 +50,13 @@ module Rage
               end
             end
           else
+            @logger.info('No previous data to go by.  Initial recommendation is to hold.')
             return 'hold' # when redis doesn't have an old value
           end
-        # else
-        #   @logger.error('Insufficient data returned from Max.  You might want to check manually.')
-        #   return 'hold' # insufficient data
         end
       end
+        @logger.error('Insufficient data returned from Max.  You might want to check manually.'.color(:red))
+        return 'hold' # insufficient data
     end
 
   end

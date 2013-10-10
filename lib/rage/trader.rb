@@ -9,9 +9,11 @@ module Rage
     end
 
     def buy
-      cash = @mtgox.get_usd_balance
-      # buy all with cash
-      # @logger.info("Bought #{btc} bitcoins at $#{price} for a total of $#{total}.")
+      buy = @mtgox.can_buy
+      price = @mtgox.current_price
+      total = buy * price
+      @mtgox.buy(buy, price)
+      @logger.info("Attempting to buy #{buy} bitcoins at $#{price} for a total of $#{total}.")
       #save_trade(purchase)
     end
 

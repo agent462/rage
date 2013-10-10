@@ -25,7 +25,11 @@ module Rage
     end
 
     def buy(count)
-      ::MtGox.buy! count, :market
+      ::MtGox.buy! count, price
+    end
+
+    def get_buys
+      ::MtGox.buys
     end
 
     def sell(count)
@@ -34,6 +38,10 @@ module Rage
 
     def get_bids
       ::MtGox.bids
+    end
+
+    def can_buy
+      get_usd_balance/current_price
     end
 
     def has_money?
@@ -65,8 +73,8 @@ module Rage
       balance
     end
 
-    def get_trades
-      ::MtGox.trades
+    def get_trades(hash)
+      ::MtGox.trades(hash)
     end
 
   end

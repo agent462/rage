@@ -12,6 +12,10 @@ module Rage
           base.current_price
         end
 
+        scheduler.every '1m' do
+
+        end
+
         scheduler.every '10m' do
           agg = Aggregator.new
           agg.prime
@@ -20,23 +24,6 @@ module Rage
         scheduler.every '15m' do
           base.handle
         end
-
-
-        # scheduler.cron '20 1 * * *' do
-        #   handle
-        # end
-
-        # scheduler.cron '01 9 * * *' do
-        #   handle
-        # end
-
-        # scheduler.cron '20 13 * * *' do
-        #   handle
-        # end
-
-        # scheduler.cron '20 19 * * *' do
-        #   handle
-        # end
 
         scheduler.join
       end
