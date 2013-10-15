@@ -3,4 +3,4 @@ $LOAD_PATH << File.dirname(__FILE__) + '/../lib' unless $LOAD_PATH.include?(File
 
 require 'rage'
 rage = Rage::Base.new
-rage.setup
+rage.run

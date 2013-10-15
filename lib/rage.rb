@@ -7,6 +7,7 @@ require 'rage/version'
 require 'rage/formulas/moving_average'
 require 'rage/formulas/max'
 require 'rage/aggregator'
+require 'rage/trader'
 
 module Rage
 end
