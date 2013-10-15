@@ -1,11 +1,16 @@
+# MtGox api credentials
 mtgox_key     ''
 mtgox_secret  ''
 
-trade         'true'
+# Should the bot perform active trades
+trade         true
+max_buy       0.01 # max btc to buy
+max_sell      0.01 # max btc to sell
+commission    0.6 # your commission amount
 
-buy_limit
-sell_limit     nil
-trade_size     nil
-
+# Host and port for redis
 redis_host    '127.0.0.1'
 redis_port    '6379'
+
+# URI for Max formula
+max_uri       ''
