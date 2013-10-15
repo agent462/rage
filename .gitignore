@@ -2,3 +2,4 @@
 pkg/*
 *.lock
 .idea
+*test.rb*

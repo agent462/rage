@@ -13,7 +13,7 @@ module Rage
     end
 
     def current_price
-      d = ::MtGox.ticker.price
+      d = ::MtGox.ticker.sell
       d.to_digits
     end
 
@@ -25,11 +25,19 @@ module Rage
     end
 
     def buy(count)
-      ::MtGox.buy! count, price
+      ::MtGox.buy! count, :market
     end
 
     def get_buys
       ::MtGox.buys
+    end
+
+    def get_sells
+      ::MtGox.sells
+    end
+
+    def order_result(type, id)
+      ::MtGox.order_result(type, id)
     end
 
     def sell(count)
@@ -41,7 +49,12 @@ module Rage
     end
 
     def can_buy
-      get_usd_balance/current_price
+      balance = get_usd_balance.to_f
+      Integer(((balance - (commission(balance)))/ current_price.to_f) * 100) / Float(100)
+    end
+
+    def commission(balance)
+      (balance * Config.commission)/100
     end
 
     def has_money?
@@ -61,7 +74,7 @@ module Rage
 
     def get_btc_balance
       balance = get_balance
-      balance['BTC']
+      balance['BTC'].to_f
     end
 
     def get_balance
