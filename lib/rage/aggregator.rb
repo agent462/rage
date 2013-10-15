@@ -38,7 +38,7 @@ module Rage
       close_price = @redis.hvals(trades.max)
       open_price = @redis.hvals(trades.min)
       sma = MovingAverage::sma(price)
-      @redis.hmset('agg' + hour, 'sma', sma, 'trades', count, 'high', high, 'low', low, 'volume', volume, 'open', open_price[2].to_f, 'close', close_price[2].to_f)
+      @redis.hmset('agg:' + hour, 'sma', sma, 'trades', count, 'high', high, 'low', low, 'volume', volume, 'open', open_price[2].to_f, 'close', close_price[2].to_f)
     end
 
     def save_trades(trades)
