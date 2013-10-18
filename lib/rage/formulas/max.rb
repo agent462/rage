@@ -44,15 +44,14 @@ module Rage
           end
         end
       end
-      get_brains
     end
 
-    def get_brains
-      brains.each do |brain|
-        values = get_values(brain)
-        response(values)
-      end
-    end
+    # def get_brains
+    #   brains.each do |brain|
+    #     values = get_values(brain)
+    #     response(values)
+    #   end
+    # end
 
     def get_brain(brain = Config.max_brain)
       values = get_values(brain)
@@ -62,12 +61,13 @@ module Rage
     def response(values)
       if enough_data?(values)
         if signal_change?(values)
-          puts recommendation(values[0][1], values[1][1])
+          return recommendation(values[0][1], values[1][1])
         else
-          puts 'hold'
+          return 'hold'
         end
       else
-        @logger.error('Not enough data')
+        @logger.error('Not enough data returned from Max to make a decision.')
+        return 'hold'
       end
     end
 
