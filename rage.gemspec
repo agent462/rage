@@ -13,11 +13,11 @@ Gem::Specification.new do |s|
   s.homepage    ='http://github.com/agent462/rage'
 
   s.add_dependency('rainbow', '1.1.4')
-  s.add_dependency('trollop', '2.0')
   s.add_dependency('mixlib-config', '1.1.2')
   s.add_dependency('rufus-scheduler')
   s.add_dependency('redis')
   s.add_dependency('mtgox')
+  s.add_dependency('mail')
 
   s.add_development_dependency('rspec')
   s.add_development_dependency('rubocop')
