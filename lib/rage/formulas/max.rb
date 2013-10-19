@@ -59,7 +59,7 @@ module Rage
     end
 
     def response(values)
-      if enough_data?(values)
+      if enough_data?(values) && values.count > 1
         if signal_change?(values)
           return recommendation(values[0][1], values[1][1])
         else
