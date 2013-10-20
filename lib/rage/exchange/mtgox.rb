@@ -50,11 +50,11 @@ module Rage
 
     def can_buy
       balance = get_usd_balance.to_f
-      Integer(((balance - (commission(balance)))/ current_price.to_f) * 100) / Float(100)
+      Integer(((balance - (commission(balance))) / current_price.to_f) * 100) / Float(100)
     end
 
     def commission(balance)
-      (balance * Config.commission)/100
+      (balance * Config.commission) / 100
     end
 
     def has_money?
@@ -86,8 +86,12 @@ module Rage
       balance
     end
 
-    def get_trades(hash)
-      ::MtGox.trades(hash)
+    def get_trades(hash = false)
+      if hash
+        ::MtGox.trades(hash)
+      else
+        ::MtGox.trades
+      end
     end
 
   end
