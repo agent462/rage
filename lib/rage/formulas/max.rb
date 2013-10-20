@@ -21,15 +21,9 @@ module Rage
       uri = URI(Config.max_uri)
       CSV.parse(Net::HTTP.get(uri))
     rescue StandardError
-      @logger.error('There was an error getting the data from Max.')
+      @logger.error('There was an error getting the data from Max.'.color(:red))
     end
 
-    #
-    #  Will return action to do
-    #  Buy: buy btc if we are holding cash
-    #  Sell: sell btc if we are holding btc
-    #  Hold: don't take any action
-    #
     #  Redis Set max:3_hour_analysis_last id
     #  Redis Hash max:3_hour_analysis_last:id
     def collect
@@ -37,21 +31,24 @@ module Rage
       brains.each do |brain|
         data.each do |d|
           if d.include? brain
-            @logger.info("Saving #{d[0]} brain.")
-            time = Time.now.to_i
-            redis.zadd("max:#{d[0]}", time, "max:#{brain}:#{time}")
+            @logger.info("Saving #{d.first} brain.")
+            time = now
+            redis.zadd("max:#{d.first}", time, "max:#{brain}:#{time}")
             redis.hmset("max:#{brain}:#{time}", 'timestamp', time, 'fitness', d[1], 'signal', d[2], 'last_data', d[3])
           end
         end
       end
     end
 
-    # def get_brains
-    #   brains.each do |brain|
-    #     values = get_values(brain)
-    #     response(values)
-    #   end
-    # end
+    def get_brains
+      brains.each do |brain|
+        @logger.info("The #{brain} advice is to #{get_brain(brain)}")
+      end
+    end
+
+    def now
+      Time.now.to_i
+    end
 
     def get_brain(brain = Config.max_brain)
       values = get_values(brain)
@@ -66,7 +63,7 @@ module Rage
           return 'hold'
         end
       else
-        @logger.error('Not enough data returned from Max to make a decision.')
+        @logger.error('Not enough data returned from Max to make a decision.'.color(:red))
         return 'hold'
       end
     end
@@ -78,20 +75,20 @@ module Rage
                   :get => '#',
                   :get => ['*->timestamp', '*->signal'],
                   :order => 'desc',
-                  :limit => [0,2]
+                  :limit => [0, 2]
                 )
     end
 
     def recommendation(current, previous)
       return 'buy' if current.to_i > previous.to_i && current != '0'
       return 'sell' if current.to_i < previous.to_i && current != '0'
-      return 'hold'
+      'hold'
     end
 
     def enough_data?(values)
-      max = values.max_by { |x| x}
-      min = values.min_by { |x| x}
-      (max[0].to_i - min[0].to_i) < 1200 ? true : false
+      max = values.max_by { |x| x }
+      min = values.min_by { |x| x }
+      ((max[0].to_i - min[0].to_i) < 1200) && (now - max[0].to_i) < 1200 ? true : false
     end
 
     def signal_change?(values)
@@ -100,4 +97,3 @@ module Rage
 
   end
 end
-
