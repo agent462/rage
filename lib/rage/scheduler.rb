@@ -1,4 +1,5 @@
 require 'rufus-scheduler'
+require 'rainbow'
 
 module Rage
   class Scheduler
@@ -7,41 +8,38 @@ module Rage
       def run
         scheduler = Rufus::Scheduler.new
         base = Base.new
+        mtgox = MtGox.new
+        max = Max.new
+        agg = Aggregator.new
+
         @logger = base.logger
 
-        scheduler.every '15m', :firat_at => Time.now + 10 do
-          mtgox = MtGox.new
+        scheduler.every '15m', :first_at => Time.now + 10 do
           account = mtgox.get_balance
-          @logger.info('Account information')
-          @logger.info("USD: $#{account["USD"]}")
-          @logger.info("BTC: #{account["BTC"]}")
+          @logger.info('Account information'.color(:green))
+          @logger.info("USD: $#{account["USD"]}".color(:green))
+          @logger.info("BTC: #{account["BTC"]}".color(:green))
         end
 
         scheduler.every '5m', :first_at => Time.now + 10 do
-          Scheduler.current_price
+          agg.get_current_price
         end
 
-        scheduler.every '10m', :first_at => Time.now + 10 do
-          agg = Aggregator.new
-          agg.prime
-        end
+        # scheduler.every '10m', :first_at => Time.now + 10 do
+        #   agg = Aggregator.new
+        #   agg.prime
+        # end
 
         scheduler.every '15m', :first_at => Time.now + 10 do
-          Scheduler.handle
+          max.collect
+          advice = max.get_brain
+          @logger.info("The recommendation from Max is to #{advice}".color(:cyan))
+          dec = Decision.new
+          dec.make(advice)
+          max.get_brains
         end
 
         scheduler.join
-      end
-
-      def current_price
-        mtgox = MtGox.new
-        @logger.info("Current MtGox Price: $#{mtgox.current_price}")
-      end
-
-      def handle
-        max = Max.new
-        d = max.fetch
-        @logger.info("The recommendation from Max is to #{max.trade(d)}".color(:cyan))
       end
 
     end
