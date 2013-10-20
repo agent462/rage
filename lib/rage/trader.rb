@@ -20,9 +20,7 @@ module Rage
       total = amount.to_f * price.to_f
       @logger.info("Attempting to buy #{amount} bitcoins at $#{price} for a total of $#{total}.")
       bid = @mtgox.buy(amount)
-      while @mtgox.get_buys.count > 0
-        sleep(5)
-      end
+      sleep(5) while @mtgox.get_buys.count > 0
       order = @mtgox.order_result('bid', bid)
       @logger.info("Bought #{order.total_amount.to_f} btc for $#{order.total_spent.to_f} with an average cost of $#{order.avg_cost.to_f}.")
       save_trade({
@@ -38,9 +36,7 @@ module Rage
       btc > Config.max_sell.to_f ? amount = Config.max_sell.to_f : amount = btc
       ask = @mtgox.sell(amount)
       @logger.info("Attempting to sell #{amount} bitcoins.")
-      while @mtgox.get_sells.count > 0
-        sleep(5)
-      end
+      sleep(5) while @mtgox.get_sells.count > 0
       order = @mtgox.order_result('ask', ask)
       @logger.info("Sold #{order.total_amount.to_f} btc for $#{order.total_spent.to_f} with an average price of $#{order.avg_cost.to_f}.")
       save_trade({
@@ -62,7 +58,7 @@ module Rage
       redis = Redis.new(:host => Config.redis_host, :port => Config.redis_port)
       redis.sadd('trades', trade[:id])
       redis.set("trade:#{trade[:id]}", trade.to_json)
-      @logger.info("Trade has been saved.")
+      @logger.info('Trade has been saved.')
     end
 
     def calculate_profits
