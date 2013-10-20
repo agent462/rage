@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), 'lib', 'rage', 'version')
 
 Gem::Specification.new do |s|
-  s.name        = 'rage'
+  s.name        = 'rage-trader'
   s.version     = Rage::VERSION
   s.platform    = Gem::Platform::RUBY
   s.summary     = 'A coin evaluator'

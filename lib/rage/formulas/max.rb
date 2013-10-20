@@ -3,25 +3,18 @@ require 'csv'
 
 module Rage
   class Max
-
-    def initialize
-      @logger = Rage.logger
-    end
-
-    def redis
-      @redis ||= Redis.new(:host => Config.redis_host, :port => Config.redis_port)
-    end
+    include Logging
 
     def brains
       @brains ||= %w[ 1_hour_analysis_last 3_hour_analysis_last 6_hour_analysis_last 12_hour_analysis_last 24_hour_analysis_last ]
     end
 
     def fetch
-      @logger.info('Fetching data from Max.')
+      logger.info('Fetching data from Max.')
       uri = URI(Config.max_uri)
       CSV.parse(Net::HTTP.get(uri))
     rescue StandardError
-      @logger.error('There was an error getting the data from Max.'.color(:red))
+      logger.error('There was an error getting the data from Max.'.color(:red))
     end
 
     #  Redis Set max:3_hour_analysis_last id
@@ -31,10 +24,10 @@ module Rage
       brains.each do |brain|
         data.each do |d|
           if d.include? brain
-            @logger.info("Saving #{d.first} brain.")
+            logger.info("Saving #{d.first} brain.")
             time = now
-            redis.zadd("max:#{d.first}", time, "max:#{brain}:#{time}")
-            redis.hmset("max:#{brain}:#{time}", 'timestamp', time, 'fitness', d[1], 'signal', d[2], 'last_data', d[3])
+            Rage.redis.zadd("max:#{d.first}", time, "max:#{brain}:#{time}")
+            Rage.redis.hmset("max:#{brain}:#{time}", 'timestamp', time, 'fitness', d[1], 'signal', d[2], 'last_data', d[3])
           end
         end
       end
@@ -42,7 +35,7 @@ module Rage
 
     def get_brains
       brains.each do |brain|
-        @logger.info("The #{brain} advice is to #{get_brain(brain)}")
+        logger.info("The #{brain} advice is to #{get_brain(brain)}")
       end
     end
 
@@ -63,13 +56,13 @@ module Rage
           return 'hold'
         end
       else
-        @logger.error('Not enough data returned from Max to make a decision.'.color(:red))
+        logger.error('Not enough data returned from Max to make a decision.'.color(:red))
         return 'hold'
       end
     end
 
     def get_values(brain)
-      redis.sort(
+      Rage.redis.sort(
                   "max:#{brain}",
                   :by => 'nosort',
                   :get => '#',

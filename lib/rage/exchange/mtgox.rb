@@ -9,7 +9,6 @@ module Rage
         config.key = Config.mtgox_key
         config.secret = Config.mtgox_secret
       end
-      @logger = Rage.logger
     end
 
     def current_price

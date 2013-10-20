@@ -4,21 +4,19 @@ require 'rainbow'
 module Rage
   class Scheduler
     class << self
+      include Logging
 
       def run
         scheduler = Rufus::Scheduler.new
-        base = Base.new
         mtgox = MtGox.new
         max = Max.new
         agg = Aggregator.new
 
-        @logger = base.logger
-
         scheduler.every '15m', :first_at => Time.now + 10 do
           account = mtgox.get_balance
-          @logger.info('Account information'.color(:green))
-          @logger.info("USD: $#{account["USD"]}".color(:green))
-          @logger.info("BTC: #{account["BTC"]}".color(:green))
+          logger.info('Account information'.color(:green))
+          logger.info("USD: $#{account["USD"]}".color(:green))
+          logger.info("BTC: #{account["BTC"]}".color(:green))
         end
 
         scheduler.every '5m', :first_at => Time.now + 10 do
@@ -33,7 +31,7 @@ module Rage
         scheduler.every '15m', :first_at => Time.now + 10 do
           max.collect
           advice = max.get_brain
-          @logger.info("The recommendation from Max is to #{advice}".color(:cyan))
+          logger.info("The recommendation from Max is to #{advice}".color(:cyan))
           dec = Decision.new
           dec.make(advice)
           max.get_brains

@@ -2,16 +2,7 @@ require 'rage/exchange/mtgox'
 
 module Rage
   class Base
-
-    def initialize
-      @logger = logger
-    end
-
-    def logger
-      logger = Rage.logger
-      logger.level = Logger::INFO
-      logger
-    end
+    include Logging
 
     def settings
       directory = "#{Dir.home}/.rage"
@@ -22,7 +13,7 @@ module Rage
 
     def run
       settings
-      @logger.info('Scheduling jobs to run.')
+      logger.info('Scheduling jobs to run.')
       Rage::Scheduler.run
     end
 
