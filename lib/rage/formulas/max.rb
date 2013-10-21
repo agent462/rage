@@ -17,7 +17,7 @@ module Rage
       logger.error('There was an error getting the data from Max.'.color(:red))
     end
 
-    #  Redis Set max:3_hour_analysis_last id
+    #  Redis Sorted Set max:3_hour_analysis_last id
     #  Redis Hash max:3_hour_analysis_last:id
     def collect
       data = fetch
@@ -33,7 +33,7 @@ module Rage
       end
     end
 
-    def get_brains
+    def display_brains
       brains.each do |brain|
         logger.info("The #{brain} advice is to #{get_brain(brain)}")
       end
