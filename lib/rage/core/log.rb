@@ -17,6 +17,8 @@ module Rage
         file = File.join(dir, 'rage.log')
         FileUtils.mkdir_p(dir) unless File.directory?(dir)
         log_file = File.open(file, 'a+')
+        STDOUT.sync = true
+        log_file.sync = true
       end
       @logger ||= Logger.new(MultiIO.new(STDOUT, log_file))
     end
