@@ -23,10 +23,11 @@ module Rage
           agg.get_current_price
         end
 
-        # scheduler.every '10m', :first_at => Time.now + 5 do
-        #   agg = Aggregator.new
-        #   agg.prime
-        # end
+        scheduler.every '10m', :first_at => Time.now + 5 do
+          agg = Aggregator.new
+          agg.prime
+          agg.get_hour_info
+        end
 
         scheduler.every '15m', :first_at => Time.now + 5 do
           max.collect
