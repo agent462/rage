@@ -4,7 +4,7 @@ module Rage
 
     def make(advice)
       mtgox = MtGox.new
-      if advice == 'buy'
+      if advice[:advice] == 'buy'
         if mtgox.has_btc?
           logger.info('We already own btc.  Not buying.')
         else
@@ -12,7 +12,7 @@ module Rage
           # trade = Trader.new
           # trade.buy
         end
-      elsif advice == 'sell'
+      elsif advice[:advice] == 'sell'
         if mtgot.has_btc?
           logger.info('I am selling.')
           # trade = Trader.new
@@ -27,7 +27,9 @@ module Rage
     end
 
     def email(advice)
-      Email::send_email(:advice => advice, :message => 'todo')
+      unless advice[:current] == advice[:previous]
+        Email::send_email(:advice => advice[:advice], :message => 'todo')
+      end
     end
 
   end
