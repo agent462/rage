@@ -35,7 +35,8 @@ module Rage
 
     def display_brains
       brains.each do |brain|
-        logger.info("The #{brain} advice is to #{get_brain(brain)}")
+        advice = get_brain(brain)
+        logger.info("The #{brain} advice is to #{advice[:advice]} with a #{advice[:signal]} outlook")
       end
     end
 
@@ -53,11 +54,16 @@ module Rage
         if signal_change?(values)
           return recommendation(values[0][1], values[1][1])
         else
-          return 'hold'
+          return {
+                    :advice => 'hold',
+                    :current => signal_mapper(current),
+                    :previous => signal_mapper(values[1][1]),
+                    :signal => signal_mapper(values[0][1])
+                  }
         end
       else
         logger.error('Not enough data returned from Max to make a decision.'.color(:red))
-        return 'hold'
+        return { :advice => 'hold', :current => signal_mapper(current), :previous => nil, :signal => signal_mapper(values[0][1]) }
       end
     end
 
@@ -73,9 +79,22 @@ module Rage
     end
 
     def recommendation(current, previous)
-      return 'buy' if current.to_i > previous.to_i && current != '0'
-      return 'sell' if current.to_i < previous.to_i && current != '0'
-      'hold'
+      h = { :current => signal_mapper(current), :previous => signal_mapper(previous), :signal => signal_outlook(current) }
+      return h.merge!(:advice => 'buy') if current.to_i > previous.to_i && current != '0'
+      return h.merge!(:advice => 'sell') if current.to_i < previous.to_i && current != '0'
+      h.merge!(:advice => 'hold')
+    end
+
+    def signal_mapper(signal)
+      return 'buy' if signal == "1"
+      return 'sell' if signal == "-1"
+      return 'hold' if signal == "0"
+    end
+
+    def signal_outlook(signal)
+      return 'positive' if signal == "1"
+      return 'negative' if signal == "-1"
+      return 'unsure' if signal == "0"
     end
 
     def enough_data?(values)
