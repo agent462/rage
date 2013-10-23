@@ -23,6 +23,21 @@ module Rage
       @logger ||= Logger.new(MultiIO.new(STDOUT, log_file))
     end
 
+    def self.set_level(level)
+      case level
+      when :info
+        Rage::Logging.logger.level = Logger::INFO
+      when :debug
+        Rage::Logging.logger.level = Logger::DEBUG
+      when :error
+        Rage::Logging.logger.level = Logger::ERROR
+      when :warn
+        Rage::Logging.logger.level = Logger::WARN
+      when :fatal
+        Rage::Logging.logger.level = Logger::FATAL
+      end
+    end
+
     #
     # Allows multiple targets for logger
     #
