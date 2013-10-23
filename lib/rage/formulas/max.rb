@@ -72,7 +72,6 @@ module Rage
     def recommendation(values)
       current, previous = values[0][1], values[1][1]
       h = { :current => signal_mapper(current), :previous => signal_mapper(previous), :signal => signal_outlook(current) }
-      return if enough_data?(values) == false && values.count < 1
       return h.merge!(:advice => 'hold') if signal_change?(values) == false
       return h.merge!(:advice => 'buy') if current.to_i > previous.to_i && current != '0'
       return h.merge!(:advice => 'sell') if current.to_i < previous.to_i && current != '0'
