@@ -11,7 +11,7 @@ module Rage
 
     def buy
       can_buy = @mtgox.can_buy
-      can_buy > Config.max_buy.to_f ? amount = Config.max_buy.to_f : amount = can_buy
+      amount = can_buy > Config.max_buy.to_f ? Config.max_buy.to_f : can_buy
       if amount < 0.01
         @logger.info('The number of btc you can buy is below the minimum 0.01.')
         return
@@ -19,8 +19,8 @@ module Rage
       price = @mtgox.current_price
       total = amount.to_f * price.to_f
       @logger.info("Attempting to buy #{amount} bitcoins at $#{price} for a total of $#{total}.")
-      bid = @mtgox.buy(amount)
-      sleep(5) while @mtgox.get_buys.count > 0
+      bid = @mtgox.buy!(amount, :market)
+      sleep(5) while @mtgox.buys.count > 0
       order = @mtgox.order_result('bid', bid)
       @logger.info("Bought #{order.total_amount.to_f} btc for $#{order.total_spent.to_f} with an average cost of $#{order.avg_cost.to_f}.")
       save_trade({
@@ -34,9 +34,9 @@ module Rage
     def sell
       btc = @mtgox.get_btc_balance
       btc > Config.max_sell.to_f ? amount = Config.max_sell.to_f : amount = btc
-      ask = @mtgox.sell(amount)
+      ask = @mtgox.sell!(amount, :market)
       @logger.info("Attempting to sell #{amount} bitcoins.")
-      sleep(5) while @mtgox.get_sells.count > 0
+      sleep(5) while @mtgox.sells.count > 0
       order = @mtgox.order_result('ask', ask)
       @logger.info("Sold #{order.total_amount.to_f} btc for $#{order.total_spent.to_f} with an average price of $#{order.avg_cost.to_f}.")
       save_trade({
@@ -58,7 +58,7 @@ module Rage
       redis = Redis.new(:host => Config.redis_host, :port => Config.redis_port)
       redis.sadd('trades', trade[:id])
       redis.set("trade:#{trade[:id]}", trade.to_json)
-      @logger.info('Trade has been saved.')
+      @logger.debug('Trade has been saved.')
     end
 
     def calculate_profits

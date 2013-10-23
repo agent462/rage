@@ -1,4 +1,3 @@
-
 module Rage
   class Aggregator
     include Logging
@@ -10,9 +9,9 @@ module Rage
     def prime
       last_trade = get_last_saved_trade
       if last_trade
-        trades = mtgox.get_trades(:since => last_trade.to_i)
+        trades = mtgox.trades(:since => last_trade.to_i)
       else
-        trades = mtgox.get_trades
+        trades = mtgox.trades
       end
       logger.info("Fetched #{trades.count} trades.")
       save_trades(trades) if trades.count > 0
@@ -42,7 +41,7 @@ module Rage
     end
 
     def save_trades(trades)
-      logger.info('Saving trades and calculating hourly aggregates')
+      logger.debug('Saving trades and calculating hourly aggregates')
       Rage.redis.set('mtgox:last_saved_trade', trades.max_by { |x| x.id }.id)
       hours_to_update = Set.new
       trades.each do |trade|

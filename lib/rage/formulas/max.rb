@@ -24,7 +24,7 @@ module Rage
       brains.each do |brain|
         data.each do |d|
           if d.include? brain
-            logger.info("Saving #{d.first} brain.")
+            logger.debug("Saving #{d.first} brain.")
             time = now
             Rage.redis.zadd("max:#{d.first}", time, "max:#{brain}:#{time}")
             Rage.redis.hmset("max:#{brain}:#{time}", 'timestamp', time, 'fitness', d[1], 'signal', d[2], 'last_data', d[3])
@@ -51,19 +51,10 @@ module Rage
 
     def response(values)
       if enough_data?(values) && values.count > 1
-        if signal_change?(values)
-          return recommendation(values[0][1], values[1][1])
-        else
-          return {
-                    :advice => 'hold',
-                    :current => signal_mapper(current),
-                    :previous => signal_mapper(values[1][1]),
-                    :signal => signal_mapper(values[0][1])
-                  }
-        end
+          return recommendation(values)
       else
         logger.error('Not enough data returned from Max to make a decision.'.color(:red))
-        return { :advice => 'hold', :current => signal_mapper(current), :previous => nil, :signal => signal_mapper(values[0][1]) }
+        return { :advice => 'hold', :current => signal_mapper(values[0][1]), :previous => nil, :signal => signal_mapper(values[0][1]) }
       end
     end
 
@@ -78,8 +69,11 @@ module Rage
                 )
     end
 
-    def recommendation(current, previous)
+    def recommendation(values)
+      current, previous = values[0][1], values[1][1]
       h = { :current => signal_mapper(current), :previous => signal_mapper(previous), :signal => signal_outlook(current) }
+      return if enough_data?(values) == false && values.count < 1
+      return h.merge!(:advice => 'hold') if signal_change?(values) == false
       return h.merge!(:advice => 'buy') if current.to_i > previous.to_i && current != '0'
       return h.merge!(:advice => 'sell') if current.to_i < previous.to_i && current != '0'
       h.merge!(:advice => 'hold')

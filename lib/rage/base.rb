@@ -13,6 +13,7 @@ module Rage
 
     def run
       settings
+      Rage::Logging.set_level(Config.log_level)
       logger.info('Scheduling jobs to run.')
       Rage::Scheduler.run
     end
