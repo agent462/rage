@@ -10,7 +10,11 @@ module Rage
 
     def buy
       can_buy = @mtgox.can_buy
-      amount = can_buy > Config.max_buy.to_f ? Config.max_buy.to_f : can_buy
+      if Config.max_buy.nil? || can_buy <= Config.max_buy.to_f
+        amount = can_buy
+      else
+        amount = Config.max_buy.to_f
+      end
       if amount < 0.01
         logger.info('The number of btc you can buy is below the minimum 0.01.')
         return
@@ -32,7 +36,11 @@ module Rage
 
     def sell
       btc = @mtgox.get_btc_balance
-      btc > Config.max_sell.to_f ? amount = Config.max_sell.to_f : amount = btc
+      if Config.max_sell.nil? || btc <= Config.max_sell.to_f
+        amount = btc
+      else
+        amount = Config.max_sell.to_f
+      end
       ask = @mtgox.sell!(amount, :market)
       logger.info("Attempting to sell #{amount} bitcoins.")
       sleep(5) while @mtgox.sells.count > 0

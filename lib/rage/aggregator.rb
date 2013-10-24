@@ -72,7 +72,7 @@ module Rage
     def get_hour_info
       data = Rage.redis.hgetall("mtgox:hour:#{hour(Time.now)}")
       if data.empty?
-        logger.info("No hourly aggregated data available")
+        logger.info('No hourly aggregated data available')
       else
         logger.info('===== Data for this Hour ====='.color(:cyan))
         logger.info("MtGox Trades: #{data["trades"]}".color(:cyan))

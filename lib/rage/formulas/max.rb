@@ -51,7 +51,7 @@ module Rage
 
     def response(values)
       if enough_data?(values) && values.count > 1
-          return recommendation(values)
+        return recommendation(values)
       else
         logger.error('Not enough data returned from Max to make a decision.'.color(:red))
         return { :advice => 'hold', :current => signal_mapper(values[0][1]), :previous => nil, :signal => signal_mapper(values[0][1]) }
@@ -73,21 +73,21 @@ module Rage
       current, previous = values[0][1], values[1][1]
       h = { :current => signal_mapper(current), :previous => signal_mapper(previous), :signal => signal_outlook(current) }
       return h.merge!(:advice => 'hold') if signal_change?(values) == false
-      return h.merge!(:advice => 'buy') if current.to_i > previous.to_i && current != '0'
-      return h.merge!(:advice => 'sell') if current.to_i < previous.to_i && current != '0'
+      return h.merge!(:advice => 'buy') if current.to_i > previous.to_i && current.to_i != 0
+      return h.merge!(:advice => 'sell') if current.to_i < previous.to_i && current.to_i != 0
       h.merge!(:advice => 'hold')
     end
 
     def signal_mapper(signal)
-      return 'buy' if signal == "1"
-      return 'sell' if signal == "-1"
-      return 'hold' if signal == "0"
+      return 'buy' if signal == '1'
+      return 'sell' if signal == '-1'
+      return 'hold' if signal == '0'
     end
 
     def signal_outlook(signal)
-      return 'positive' if signal == "1"
-      return 'negative' if signal == "-1"
-      return 'unsure' if signal == "0"
+      return 'positive' if signal == '1'
+      return 'negative' if signal == '-1'
+      return 'unsure' if signal == '0'
     end
 
     def enough_data?(values)
@@ -97,7 +97,7 @@ module Rage
     end
 
     def signal_change?(values)
-      values[0][1] == values[1][1] ? true : false
+      values[0][1] == values[1][1] ? false : true
     end
 
   end

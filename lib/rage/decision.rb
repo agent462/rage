@@ -27,9 +27,7 @@ module Rage
     end
 
     def email(advice)
-      unless advice[:current] == advice[:previous]
-        Email::send_email(:advice => advice[:advice], :message => 'todo')
-      end
+      Email::send_email(:advice => advice[:advice], :message => 'todo') unless advice[:current] == advice[:previous]
     end
 
   end

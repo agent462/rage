@@ -9,7 +9,7 @@ module Rage
       end
 
       def ema(sma)
-        sma = ''
+        # sma = ''
         weight = (2 / (markers + 1))
         (close - EMA(previous)) * weight + EMA(previous)
       end
