@@ -54,7 +54,7 @@ module Rage
         return recommendation(values)
       else
         logger.error('Not enough data returned from Max to make a decision.'.color(:red))
-        return { :advice => 'hold', :current => signal_mapper(values[0][1]), :previous => nil, :signal => signal_mapper(values[0][1]) }
+        return { :advice => 'hold', :current => signal_mapper(values[0][1]), :previous => nil, :signal => signal_outlook(values[0][1]) }
       end
     end
 
