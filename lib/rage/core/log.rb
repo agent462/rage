@@ -25,8 +25,6 @@ module Rage
 
     def self.set_level(level)
       case level
-      when :info
-        Rage::Logging.logger.level = Logger::INFO
       when :debug
         Rage::Logging.logger.level = Logger::DEBUG
       when :error
@@ -35,6 +33,8 @@ module Rage
         Rage::Logging.logger.level = Logger::WARN
       when :fatal
         Rage::Logging.logger.level = Logger::FATAL
+      else
+        Rage::Logging.logger.level = Logger::INFO
       end
     end
 
