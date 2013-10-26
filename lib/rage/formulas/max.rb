@@ -35,7 +35,7 @@ module Rage
 
     def display_brains
       brains.each do |brain|
-        advice = get_brain(brain)
+        advice = advice(brain)
         logger.info("The #{brain} advice is to #{advice[:advice]} with a #{advice[:signal]} outlook")
       end
     end
@@ -44,7 +44,7 @@ module Rage
       Time.now.to_i
     end
 
-    def get_brain(brain = Config.max_brain)
+    def advice(brain = Config.max_brain)
       values = get_values(brain)
       response(values)
     end

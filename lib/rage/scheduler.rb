@@ -31,7 +31,7 @@ module Rage
 
         scheduler.every '15m', :first_at => Time.now + 2 do
           max.collect
-          advice = max.get_brain
+          advice = max.advice
           logger.info("The recommendation from Max is to #{advice[:advice]} and has a #{advice[:signal]} outlook.".color(:cyan))
           dec = Decision.new
           dec.make(advice)
