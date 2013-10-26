@@ -5,11 +5,10 @@ require 'rage/core/settings'
 require 'rage/core/email'
 require 'rage/scheduler'
 require 'rage/version'
-require 'rage/formulas/moving_average'
-require 'rage/formulas/max'
 require 'rage/aggregator'
 require 'rage/trader'
 require 'rage/decision'
+Dir[File.dirname(__FILE__) + "/rage/indicators/*.rb"].each {|file| require file }
 
 module Rage
   def self.redis

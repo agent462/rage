@@ -100,5 +100,9 @@ module Rage
       values[0][1] == values[1][1] ? false : true
     end
 
+    def method_missing(m, *args, &block)
+      logger.debug("Method #{m} is not implemented on this class.")
+    end
+
   end
 end

@@ -9,8 +9,8 @@ module Rage
       def run
         scheduler = Rufus::Scheduler.new
         mtgox = MtGox.new
-        max = Max.new
         agg = Aggregator.new
+        indicator = Rage::const_get(Config.trader).new
 
         scheduler.every '15m', :first_at => Time.now + 2 do
           account = mtgox.get_balance
@@ -30,12 +30,12 @@ module Rage
         end
 
         scheduler.every '15m', :first_at => Time.now + 2 do
-          max.collect
-          advice = max.advice
+          indicator.collect
+          advice = indicator.advice
           logger.info("The recommendation from Max is to #{advice[:advice]} and has a #{advice[:signal]} outlook.".color(:cyan))
           dec = Decision.new
           dec.make(advice)
-          max.display_brains
+          indicator.display_brains
         end
 
         scheduler.join

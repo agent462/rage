@@ -3,7 +3,9 @@ mtgox_key     ''
 mtgox_secret  ''
 
 # Should the bot perform active trades
-trade          true
+trade          false
+trader         'Max'
+
 max_buy       0.01 # max btc to buy
 max_sell      0.01 # max btc to sell
 commission    0.6
@@ -19,3 +21,5 @@ max_brain     '1_hour_analysis_last'
 # email uses gmail
 email ''
 email_password  ''
+
+log_level :info
