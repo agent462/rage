@@ -29,7 +29,7 @@ module Rage
           agg.get_hour_info
         end
 
-        scheduler.every '15m', :first_at => Time.now + 2 do
+        scheduler.every '10m', :first_at => Time.now + 2 do
           indicator.collect
           advice = indicator.advice
           logger.info("The recommendation from Max is to #{advice[:advice]} and has a #{advice[:signal]} outlook.".color(:cyan))

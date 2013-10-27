@@ -34,10 +34,14 @@ module Rage
     end
 
     def display_brains
+      signal, msg = 0, []
       brains.each do |brain|
         advice = advice(brain)
-        logger.info("The #{brain} advice is to #{advice[:advice]} with a #{advice[:signal]} outlook")
+        signal += 1 unless advice[:current] == advice[:previous]
+        msg.push("The #{brain} advice is to #{advice[:advice]} with a #{advice[:signal]} outlook")
       end
+      msg.each { |m| logger.info(m) }
+      email("Rage Trader: A signal change has occured", msg.join('\n\r')) if signal > 0
     end
 
     def now
@@ -98,6 +102,10 @@ module Rage
 
     def signal_change?(values)
       values[0][1] == values[1][1] ? false : true
+    end
+
+    def email(subject, message)
+      Email::send_email(:subject => subject, :message => message)
     end
 
     def method_missing(m, *args, &block)

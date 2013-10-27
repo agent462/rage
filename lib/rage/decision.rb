@@ -9,14 +9,14 @@ module Rage
           logger.info('We already own btc.  Not buying.')
         else
           logger.info('I am buying.')
-          # trade = Trader.new
-          # trade.buy
+          trade = Trader.new
+          trade.buy
         end
       elsif advice[:advice] == 'sell'
         if mtgot.has_btc?
           logger.info('I am selling.')
-          # trade = Trader.new
-          # trade.sell
+          trade = Trader.new
+          trade.sell
         else
           logger.info("We don't own any btc to sell.  Not doing anything")
         end
@@ -27,7 +27,7 @@ module Rage
     end
 
     def email(advice)
-      Email::send_email(:advice => advice[:advice], :message => 'todo') unless advice[:current] == advice[:previous]
+      Email::send_email(:subject => "Rage Trader:  Recommendation is to #{advice[:advice]}", :message => 'todo') unless advice[:current] == advice[:previous]
     end
 
   end

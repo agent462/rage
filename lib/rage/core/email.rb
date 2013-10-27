@@ -18,7 +18,7 @@ module Rage
         Mail.deliver do
           from    Config.email
           to      Config.email
-          subject "Rage Trader: Recommendation #{message[:advice]}"
+          subject message[:subject] # "Rage Trader: Recommendation #{message[:advice]}"
           body    message[:body]
         end
       end
