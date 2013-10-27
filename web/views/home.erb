@@ -1,0 +1,31 @@
+<div class="container">
+
+  <div class="trader">
+    <p class="lead"><h1>Trades</h1>
+
+    </p>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>type</th>
+            <th>amount</th>
+            <th>price</th>
+            <th>total</th>
+          </tr>
+        </thead>
+        <tbody>
+      <% @trades.each do |t| %>
+          <tr>
+            <td><%= t[:id] %></td>
+            <td><%= t[:type] %></td>
+            <td><%= t[:amount] %></td>
+            <td><%= t[:price] %></td>
+            <td><%= t[:total] %></td>
+          </tr>
+      <% end %>
+        </tbody>
+      </table>
+  </div>
+
+</div><!-- /.container -->
