@@ -11,11 +11,11 @@ module Rage
 
       def get_trades
         list = []
-        trades = redis.smembers('trades:mock')
+        trades = redis.smembers('mock:trades')
         trades.each do |trade|
-          list.push(JSON.parse(redis.get("trade:mock:#{trade}"), :symbolize_names => true))
+          list.push(JSON.parse(redis.get("mock:trade:#{trade}"), :symbolize_names => true))
         end
-        list
+        list.sort_by { |hsh| hsh[:id] }.reverse
       end
 
     end

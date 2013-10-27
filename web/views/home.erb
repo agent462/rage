@@ -7,16 +7,18 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th>id</th>
-            <th>type</th>
-            <th>amount</th>
-            <th>price</th>
-            <th>total</th>
+            <th>Date</th>
+            <th>Trade Id</th>
+            <th>Type</th>
+            <th>Amount Traded</th>
+            <th>Price</th>
+            <th>Total</th>
           </tr>
         </thead>
         <tbody>
       <% @trades.each do |t| %>
           <tr>
+            <td><%= Time.at(t[:id]).to_datetime %></td>
             <td><%= t[:id] %></td>
             <td><%= t[:type] %></td>
             <td><%= t[:amount] %></td>
