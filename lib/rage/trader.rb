@@ -67,8 +67,8 @@ module Rage
 
     def save_trade(trade)
       if is_mock?
-        Rage.redis.sadd('trades:mock', trade[:id])
-        Rage.redis.set("trade:mock:#{trade[:id]}", trade.to_json)
+        Rage.redis.sadd('mock:trades', trade[:id])
+        Rage.redis.set("mock:trade:#{trade[:id]}", trade.to_json)
       else
         Rage.redis.sadd('trades', trade[:id])
         Rage.redis.set("trade:#{trade[:id]}", trade.to_json)
@@ -89,9 +89,6 @@ module Rage
         :price => price,
         :total => total
       }
-    end
-
-    def calculate_profits
     end
 
   end
