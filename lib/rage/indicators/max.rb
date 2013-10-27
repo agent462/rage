@@ -105,7 +105,7 @@ module Rage
     end
 
     def email(subject, message)
-      Email::send_email(:subject => subject, :message => message)
+      Email::send_email(:subject => subject, :body => message)
     end
 
     def method_missing(m, *args, &block)

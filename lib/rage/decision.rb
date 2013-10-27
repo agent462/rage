@@ -27,7 +27,7 @@ module Rage
     end
 
     def email(advice)
-      Email::send_email(:subject => "Rage Trader:  Recommendation is to #{advice[:advice]}", :message => 'todo') unless advice[:current] == advice[:previous]
+      Email::send_email(:subject => "Rage Trader:  Recommendation is to #{advice[:advice]}", :body => 'todo') unless advice[:current] == advice[:previous]
     end
 
   end
