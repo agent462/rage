@@ -41,7 +41,7 @@ module Rage
         msg.push("The #{brain} advice is to #{advice[:advice]} with a #{advice[:signal]} outlook")
       end
       msg.each { |m| logger.info(m) }
-      email("Rage Trader: A signal change has occured", msg.join('\n\r')) if signal > 0
+      email("Rage Trader: A signal change has occured", msg.join('<br />')) if signal > 0
     end
 
     def now
