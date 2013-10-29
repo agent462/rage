@@ -5,6 +5,7 @@ mtgox_secret  ''
 # Should the bot perform active trades
 trade          false
 trader         'Max'
+mock_dollars    1000
 
 max_buy       0.01 # max btc to buy
 max_sell      0.01 # max btc to sell
