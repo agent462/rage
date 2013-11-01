@@ -19,7 +19,10 @@ module Rage
           from    Config.email
           to      Config.email
           subject message[:subject]
-          body    message[:body]
+          html_part do
+            content_type 'text/html; charset=UTF-8'
+            body  message[:body]
+          end
         end
       end
 
