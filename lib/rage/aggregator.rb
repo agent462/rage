@@ -8,12 +8,8 @@ module Rage
 
     def prime
       last_trade = get_last_saved_trade
-      if last_trade
-        trades = mtgox.trades(:since => last_trade.to_i)
-      else
-        trades = mtgox.trades
-      end
-      logger.info("Fetched #{trades.count} trades.")
+      trades = last_trade ? mtgox.trades(:since => last_trade.to_i) : mtgox.trades
+      logger.debug("Fetched #{trades.count} trades.")
       save_trades(trades) if trades.count > 0
     end
 
@@ -23,7 +19,7 @@ module Rage
 
     def update_hour(hours_to_update)
       hours_to_update.each do |h|
-        volume, price, high, low = 0, [], 0, 1000000
+        volume, prices, high, low = 0, [], 0, 1000000
         trades = Rage.redis.zrevrange("mtgox:trades:#{h}", 0, -1)
         count = trades.count
         trades.each do |trade|
@@ -31,11 +27,12 @@ module Rage
           high = details[3].to_f if details[3].to_f > high
           low = details[3].to_f  if details[3].to_f < low
           volume += details[1].to_f
-          price << details[3].to_f
+          prices << details[3].to_f
         end
         close_price = Rage.redis.hvals(trades.max)
         open_price = Rage.redis.hvals(trades.min)
-        sma = MovingAverage::sma(price)
+        sma = MovingAverage::sma(prices)
+        # ema = MovingAverage::ema(current_price, Config.ema_short, previous)
         Rage.redis.hmset('mtgox:hour:' + h, 'sma', sma, 'trades', count, 'high', high, 'low', low, 'volume', volume, 'open', open_price[3].to_f, 'close', close_price[3].to_f)
       end
     end
@@ -70,18 +67,14 @@ module Rage
     end
 
     def get_hour_info
-      data = Rage.redis.hgetall("mtgox:hour:#{hour(Time.now)}")
-      if data.empty?
+      stat = Stats.new(hour(Time.now))
+      if stat.empty?
         logger.info('No hourly aggregated data available')
       else
         logger.info('===== Data for this Hour ====='.color(:cyan))
-        logger.info("MtGox Trades: #{data["trades"]}".color(:cyan))
-        logger.info("MtGox High: #{data["high"]}".color(:cyan))
-        logger.info("MtGox Low: #{data["low"]}".color(:cyan))
-        logger.info("MtGox Volume: #{data["volume"]}".color(:cyan))
-        logger.info("MtGox Open: #{data["open"]}".color(:cyan))
-        logger.info("MtGox Close: #{data["close"]}".color(:cyan))
-        logger.info("MtGox SMA: #{data["sma"]}".color(:cyan))
+        stat.available.each do |item|
+          logger.info(stat.message(item).color(:cyan))
+        end
       end
     end
 

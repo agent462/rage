@@ -1,16 +1,22 @@
 module Rage
   class Stats
-    attr_accessor :time, :hour
+    attr_reader :time, :hour
+
+    AVAILABLE = [:ema, :sma, :trades, :high, :low, :volume, :open, :close]
 
     def initialize(time)
       @time = time
-      @hour = Rage.redis.hgetall("mtgox:hour:#{@time}")
+      @hour = Rage.redis.hgetall("mtgox:hour:#{time}")
     end
 
-    [:ema, :sma, :trades, :high, :low, :volume, :open, :close].each do |method|
+    AVAILABLE.each do |method|
       define_method(method) do
         hour["#{method}"]
       end
+    end
+
+    def available
+      AVAILABLE
     end
 
     def empty?
