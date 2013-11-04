@@ -24,7 +24,7 @@ module Rage
     end
 
     def message(stat)
-      "MtGox #{stat}: #{self.send(stat)}"
+      "MtGox #{stat}: #{send(stat)}"
     end
 
     def method_missing(m, *args, &block)

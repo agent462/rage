@@ -17,7 +17,7 @@ module Rage
       total = total(@price, amount)
       logger.info("Attempting to buy #{amount} bitcoins at $#{@price} for a total of $#{total}.")
       if is_mock?
-        logger.info("Making a paper buy trade.")
+        logger.info('Making a paper buy trade.')
         save_trade(mock_trade(Time.now.to_i, 'buy', amount, @price, total))
         @account.save_btc(amount)
         @account.save_balance(0)
@@ -47,7 +47,7 @@ module Rage
       return logger.info('The number of bitcon you have to sell is below the minimum .01') if amount < 0.01
       logger.info("Attempting to sell #{amount} bitcoins.")
       if is_mock?
-        logger.info("Making a paper sell trade.")
+        logger.info('Making a paper sell trade.')
         total = total(@price, amount)
         save_trade(mock_trade(Time.now.to_i, 'sell', amount, @price, total))
         @account.save_btc(0)
@@ -77,7 +77,7 @@ module Rage
     end
 
     def mock_trade(id, type, amount, price, total)
-      if type == "buy"
+      if type == 'buy'
         logger.info("Bought #{amount.to_f} btc for $#{total.to_f} with an average cost of $#{price.to_f}.")
       else
         logger.info("Sold #{amount.to_f} btc for $#{total.to_f} with an average price of $#{price.to_f}.")
