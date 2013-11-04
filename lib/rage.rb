@@ -7,8 +7,9 @@ require 'rage/scheduler'
 require 'rage/version'
 require 'rage/aggregator'
 require 'rage/trader'
+require 'rage/stats'
 require 'rage/decision'
-Dir[File.dirname(__FILE__) + "/rage/indicators/*.rb"].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/rage/indicators/*.rb'].each { |file| require file }
 
 module Rage
   def self.redis
