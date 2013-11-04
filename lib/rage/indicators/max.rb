@@ -37,11 +37,11 @@ module Rage
       signal, msg = 0, []
       brains.each do |brain|
         advice = advice(brain)
-        signal += 1 unless advice[:current] == advice[:previous]
+        signal += 1 unless advice[:current] == advice[:previous] || advice[:previous].nil?
         msg.push("The #{brain} advice is to #{advice[:advice]} with a #{advice[:signal]} outlook")
       end
       msg.each { |m| logger.info(m) }
-      email("Rage Trader: A signal change has occured", msg.join('<br />')) if signal > 0
+      email('Rage Trader: A signal change has occured', msg.join('<br />')) if signal > 0
     end
 
     def now
