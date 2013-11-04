@@ -13,7 +13,7 @@ module Rage
           trade.buy
         end
       elsif advice[:advice] == 'sell'
-        if mtgot.has_btc?
+        if mtgox.has_btc?
           logger.info('I am selling.')
           trade = Trader.new
           trade.sell
