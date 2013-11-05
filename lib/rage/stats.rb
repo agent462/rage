@@ -28,7 +28,7 @@ module Rage
     end
 
     def method_missing(m, *args, &block)
-      "Stat #{m} is not implemented on this class."
+      "Stat #{m} is not implemented."
     end
 
   end
