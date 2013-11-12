@@ -16,15 +16,19 @@
           </tr>
         </thead>
         <tbody>
-      <% @trades.each do |t| %>
-          <tr>
-            <td><%= Time.at(t[:id]).to_datetime %></td>
-            <td><%= t[:id] %></td>
-            <td><%= t[:type] %></td>
-            <td><%= t[:amount] %></td>
-            <td><%= t[:price] %></td>
-            <td><%= t[:total] %></td>
-          </tr>
+      <% if @trades.count > 0 %>
+        <% @trades.each do |t| %>
+            <tr>
+              <td><%= Time.at(t[:id]).to_datetime %></td>
+              <td><%= t[:id] %></td>
+              <td><%= t[:type] %></td>
+              <td><%= t[:amount] %></td>
+              <td><%= t[:price] %></td>
+              <td><%= t[:total] %></td>
+            </tr>
+        <% end %>
+      <% else %>
+        <tr><td colspan='6'>no trades at this time</td></tr>
       <% end %>
         </tbody>
       </table>
