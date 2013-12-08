@@ -32,9 +32,16 @@ module Rage
         close_price = Rage.redis.hvals(trades.max)
         open_price = Rage.redis.hvals(trades.min)
         sma = MovingAverage::sma(prices)
-        # ema = MovingAverage::ema(current_price, Config.ema_short, previous)
         Rage.redis.hmset('mtgox:hour:' + h, 'sma', sma, 'trades', count, 'high', high, 'low', low, 'volume', volume, 'open', open_price[3].to_f, 'close', close_price[3].to_f)
       end
+    end
+
+    def ema
+        stats = Stats.new(hour(Time.now - 3600))
+        previous = stats.ema ? stats.ema : stats.sma
+        puts short_ema = MovingAverage::ema(mtgox.current_price, Config.ema_short, previous)
+        puts long_ema = MovingAverage::ema(mtgox.current_price, Config.ema_long, previous)
+        puts long_ema - short_ema
     end
 
     def save_trades(trades)

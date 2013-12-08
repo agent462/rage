@@ -2,7 +2,7 @@ module Rage
   class Stats
     attr_reader :time, :all
 
-    AVAILABLE = [:ema, :sma, :trades, :high, :low, :volume, :open, :close]
+    AVAILABLE = [:sma, :trades, :high, :low, :volume, :open, :close]
 
     def initialize(time)
       @time = time

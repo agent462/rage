@@ -15,4 +15,8 @@ module Rage
   def self.redis
     @redis ||= Redis.new(:host => Config.redis_host, :port => Config.redis_port)
   end
+
+  def self.is_mock?
+      @is_mock ||= !Config.trade
+  end
 end

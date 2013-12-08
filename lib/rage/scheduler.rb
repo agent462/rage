@@ -33,7 +33,7 @@ module Rage
           indicator.collect
           advice = indicator.advice
           logger.info("The recommendation from Max is to #{advice[:advice]} and has a #{advice[:signal]} outlook.".color(:cyan))
-          dec = Decision.new
+          dec = Decision.new(mtgox)
           dec.make(advice)
           indicator.display_brains
         end

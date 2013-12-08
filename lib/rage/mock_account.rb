@@ -26,6 +26,10 @@ module Rage
       Integer(((balance - commission) / current_price.to_f) * 100000000) / Float(100000000)
     end
 
+    def has_btc?
+      btc > 0 ? true : false
+    end
+
     def commission
       (balance * Config.commission) / 100
     end

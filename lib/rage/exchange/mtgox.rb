@@ -11,6 +11,11 @@ module Rage
       end
     end
 
+    def command
+      yield
+    rescue Faraday::Error::ConnectionFailed
+    end
+
     def can_buy
       balance = get_usd_balance.to_f
       Integer(((balance - (commission(balance))) / current_price.to_f) * 100) / Float(100)

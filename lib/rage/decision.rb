@@ -1,21 +1,24 @@
 module Rage
   class Decision
     include Logging
+    attr_reader :account, :trade
+
+    def initialize(account)
+      @account = account
+      @trade = Trader.new
+    end
 
     def make(advice)
-      mtgox = MtGox.new
       if advice[:advice] == 'buy'
-        if mtgox.has_btc?
+        if account.has_btc?
           logger.info('We already own btc.  Not buying.')
         else
           logger.info('I am buying.')
-          trade = Trader.new
           trade.buy
         end
       elsif advice[:advice] == 'sell'
-        if mtgox.has_btc?
+        if account.has_btc?
           logger.info('I am selling.')
-          trade = Trader.new
           trade.sell
         else
           logger.info("We don't own any btc to sell.  Not doing anything")
